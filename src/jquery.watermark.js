@@ -24,17 +24,28 @@
  */
 (function($) {
 
-	$.fn.watermark = function(watermark) {
+	$.fn.watermark = function(watermark, options) {
+
+    if (!options) {
+      if ($.isPlainObject(watermark)) {
+        options = watermark;
+        watermark = null;
+      } else {
+        options = {};
+      }
+    }
+
+    options = $.extend({ }, options);
 
 		$(this).each(function() {
 			var $box = $(this), altText = null;
 
       if (watermark === false) {
-        if ($(this).hasClass('empty')) {
+        if ($box.hasClass('empty')) {
           // This field is currently "empty", discard its value
-          $(this).val('')
+          $box.val('')
         }
-        $(this).unbind('.watermark.jquery');
+        $box.unbind('.watermark');
         return;
       } else if (typeof(watermark) === 'string') {
 				// We've been given an explicit watermark
@@ -44,7 +55,8 @@
 				var label = $('label[for=' + $box.attr('id') + ']');
 
 				if (label.size()) {
-					//label.hide();
+          if (options['hide_label'])
+            label.hide();
 					altText = label.text();
 				} else if ($box.attr('title')) {
 					altText = $box.attr('title');
@@ -59,28 +71,30 @@
 			if (!$box.val() || $box.hasClass('empty')) {
 				$box.val(altText);
 				$box.addClass('empty');
-			} else if ($box.val() === altText) {
+			} else if ($box.val() === altText && !options['accept_watermark']) {
 				$box.addClass('empty');
 			}
 
 			$box.attr('title', altText);
 
-		}).bind('focus.watermark.jquery', function() {
-			if ($(this).hasClass('empty')) {
-				$(this).removeClass('empty');
-				$(this).val('');
-			}
-		}).bind('blur.watermark.jquery', function() {
-			var watermark_text = $(this).data('watermark-text');
+		  $box.bind('focus.watermark', function() {
+        if ($(this).hasClass('empty')) {
+          $(this).val('').removeClass('empty');
+        };
+      });
 
-			if (!$(this).val() || $(this).val() == watermark_text) {
-				// no value specified on blur
-				$(this).addClass('empty');
-				$(this).val(watermark_text);
-			} else {
-				// We have a value
-				$(this).removeClass('empty');
-			}
+      $box.bind('blur.watermark', function() {
+        var watermark_text = $(this).data('watermark-text');
+
+        if (!$(this).val() || $(this).val() == watermark_text) {
+          // no value specified on blur
+          $(this).addClass('empty');
+          $(this).val(watermark_text);
+        } else {
+          // We have a value
+          $(this).removeClass('empty');
+        }
+      });
 		});
 
 		return this;
