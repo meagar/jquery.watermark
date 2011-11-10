@@ -14,7 +14,7 @@
 				}).click();
 
 				$('#off').click(function () {
-					$('input').watermark(false);
+					$('.watermarked').watermark(false);
 					$(this).attr('disabled', 'disabled');
 					$('#on').removeAttr('disabled');
 				});
@@ -34,9 +34,9 @@
 				padding:10px;
 			}
 
-      input { color:#000; width: 300px; padding:5px; }
+      .watermarked { color:#000; width: 300px; padding:5px; }
 
-      input.empty { color:#999; }
+      .watermarked.empty { color:#999; }
 
 		</style>
 
@@ -61,6 +61,22 @@
 
 
 
+
+		<div>
+			<pre>
+// Use an explicit watermark of 0, but let users enter '0' as a valid value
+// (Without accept_watermark, entering 0 would cause the field to be "empty")
+<code>$('input#num-children').watermark('0', { accept_watermark : true });</code>
+
+&lt;input type="text" id="num-children" />
+</pre>
+      <label for="num-children">How man children do you have?</label>
+			<input type="text" id="num-children" />
+		</div>
+
+
+
+
 		<div>
 <pre>
 // Guess the watermark from the label
@@ -75,9 +91,10 @@
 
 
 
+
 		<div>
 <pre>
-// Guess the watermark from the label
+// Guess the watermark from the label, and hide the label
 <code>$('input#confirm-email').watermark({ hide_label : true });</code>
 
 &lt;label for="confirm-email">Confirm Email Address</label>
@@ -86,6 +103,7 @@
 			<label for="confirm-email">Confirm Email Address</label>
 			<input type="text" id="confirm-email" />
     </div>
+
 
 
 
@@ -99,6 +117,21 @@
 
 			<input type="text" id="phone" title="Enter your phone number" />
 		</div>
+
+
+
+
+		<div>
+<pre>
+// Watermarking works on text areas too
+<code>$('textarea#bio').watermark("Enter your biography here");</code>
+
+&lt;textarea id="bio">&lt;/textarea>
+</pre>
+
+      <textarea id="bio"></textarea>
+		</div>
+
 
 	</body>
 

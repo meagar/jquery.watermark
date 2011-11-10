@@ -1,7 +1,7 @@
 /**
  * jquery.watermark
  *
- * A script for watermarking input fields in jQuery.
+ * A script for watermarking input/textarea fields in jQuery.
  *
  * Usage:
  *
@@ -22,50 +22,59 @@
  *   // Attempt to guess the watermark for all inputs (first their labels, then their titles)
  *   $('input').watermark();
  */
+
 (function($) {
 
   function bindWatermark($box, options) {
+    var emptyClass = options['empty_class'];
+
+    $box.addClass(options['watermark_class']);
+
     if (options['hide_label'] && options['hide_label'])
       options['label'].hide();
 
     if (options['set_title'])
       $box.attr('title', options['watermark']);
 
-
-    if (!$box.val() || $box.hasClass('empty')) {
+    if (!$box.val() || $box.hasClass(emptyClass)) {
+      // We have an empty box, restore the watermark text
       $box.val(options['watermark']);
-      $box.addClass('empty');
+      $box.addClass(options['empty_class']);
     } else if ($box.val() === options['watermark'] && !options['accept_watermark']) {
-      $box.addClass('empty');
+      // The box already contains the watermark text
+      $box.addClass(options['empty_class']);
     }
 
     $box.bind('focus.watermark', function() {
-      if ($(this).hasClass('empty')) {
-        $(this).val('').removeClass('empty');
+      var options = $(this).data('watermark-options');
+      if ($(this).hasClass(options['empty_class'])) {
+        $(this).val('').removeClass(options['empty_class']);
       }
     });
 
     $box.bind('blur.watermark', function() {
       var options = $(this).data('watermark-options');
 
-      if (!$(this).val() || $(this).val() == options['watermark']) {
+      if (!$(this).val() || ($(this).val() == options['watermark'] && !options['accept_watermark'])) {
         // no value specified on blur
-        $(this).addClass('empty');
+        $(this).addClass(options['empty_class']);
         $(this).val(options['watermark']);
       } else {
         // We have a value
-        $(this).removeClass('empty');
+        $(this).removeClass(options['empty_class']);
       }
     });
   };
 
   function unbindWatermark($box, options) {
-    if ($box.hasClass('empty')) {
+    $box.removeClass(options['watermark_class']);
+
+    if ($box.hasClass(options['empty_class'])) {
       // This field is currently "empty", discard its value
       $box.val('');
     }
 
-    $box.unbind('.watermark').removeClass('empty');
+    $box.unbind('.watermark').removeClass(options['empty_class']);
 
     if (options['label'] && options['hide_label'])
       options['label'].show();
@@ -83,7 +92,13 @@
       }
     }
 
-    options = $.extend({ }, options);
+    options = $.extend({
+      watermark_class  : 'watermarked',
+      empty_class      : 'empty',
+      accept_watermark : false
+    }, options);
+
+    console.log(options);
 
 		$(this).each(function() {
 			var $box = $(this), $label = null;
