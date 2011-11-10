@@ -1,0 +1,83 @@
+<!doctype:html>
+<html>
+	<head>
+		<title>jquery.watermark tests</title>
+		<script src="jquery-1.7.min.js"></script>
+		<script src="../src/jquery.watermark.js"></script>
+
+		<script type="text/javascript">
+			$(function () {
+				$('#on').click(function () {
+					$('code').each(function () { eval($(this).text()); });
+					$(this).attr('disabled', 'disabled');
+					$('#off').removeAttr('disabled');
+				}).click();
+
+				$('#off').click(function () {
+					$('input').watermark(false);
+					$(this).attr('disabled', 'disabled');
+					$('#on').removeAttr('disabled');
+				});
+			});
+		</script>
+
+		<style type="text/css">
+			div {
+				padding:30px;
+				border-bottom:1px solid #000;
+			}
+
+			pre {
+				border:2px solid #999;
+				background:#eee;
+				text-align:left;
+				padding:10px;
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+		<h1>Watermark Tests/Examples</h1>
+
+		Turn watermarking...
+		<button id="on">On</button>
+		<button id="off">Off</button>
+
+		<div>
+			<pre>
+// Use an explicit watermark
+<code>$('input#username').watermark('Username');</code>
+
+&lt;input type="text" id="username" />
+</pre>
+			<input type="text" id="username" />
+		</div>
+
+		<div>
+
+<pre>
+// Guess the watermark from the label
+<code>$('input#email').watermark();</code>
+
+&lt;label for="email">Email Address</label>
+&lt;input type="text" id="email" />
+</pre>
+			<label for="email">Email Address</label>
+			<input type="text" id="email" />
+		</div>
+		<div>
+<pre>
+// Guess the watermark from the title attribute
+<code>$('input#phone').watermark();</code>
+
+&lt;input type="text" id="phone" title="Enter your phone number" />
+</pre>
+
+			<input type="text" id="phone" title="Enter your phone number" />
+		</div>
+
+	</body>
+
+</html>
