@@ -5,14 +5,25 @@
  *
  * Usage:
  *
- *   $.watermark accepts a single optional argument which is the string to
- *   watermark the field with. If omitted, the plugin attempts to guess the
- *   watermark, first by finding labels for the given field, then by checking
- *   the field's "title" attribute.
+ *   $.watermark accepts two arguments:
+ *     - The watermark to use (string, optional)
+ *     - An options object (optional)
+ *
+ *   If specified, the first argument is used as the watermark, overiding
+ *   the automatic detecting based on label/textarea. If no explicit watermark
+ *   is given, the plugin first looks for a label to use, failing that it
+ *   checks the field's "title" attribute. If no watermark can be found, an
+ *   error is thrown.
  *
  *   Watermarking can be disabled for a field by calling
  *
  *   $('selector').watermark(false);
+ *
+ * Options:
+ *
+ *   watermark_class : the class added to all watermarked fields
+ *   empty_class : the class to add to "empty" fields currently showing their watermark
+ *   accept_watermark : if the user manually types the watermark, accept that value
  *
  * Examples:
  *
@@ -82,7 +93,6 @@
 
 
 	$.fn.watermark = function(watermark, options) {
-
     if (!options) {
       if ($.isPlainObject(watermark)) {
         options = watermark;
